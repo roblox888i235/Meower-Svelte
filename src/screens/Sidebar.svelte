@@ -57,6 +57,7 @@
 		}
 		chatid.set("");
 		page.set("blank");
+		
 		tick().then(() => page.set(newPage));
 	}
 </script>

@@ -16,8 +16,10 @@
 	import Sidebar from "./Sidebar.svelte";
 
 	import {mainPage as page} from "../lib/stores.js";
-
+	import  { modalStack } from "../lib/stores.js"
 	page.set("home");
+	$modalStack.unshift(Home)
+
 </script>
 
 <div class="main-screen">
@@ -26,6 +28,7 @@
 		<Sidebar />
 	</div>
 	<div class="view">
+		<svelte:component this={$modalStack[0]} />
 		{#if $page === "home"}
 			<Home />
 		{:else if $page === "inbox"}

@@ -35,8 +35,12 @@
 		disconnectReason,
 		user,
 		spinner,
+		modalStack,		
 	} from "./lib/stores.js";
 	import {tick} from "svelte";
+	
+	$modalStack.push(LoginModal)
+
 </script>
 
 <main
@@ -91,6 +95,7 @@
 	{/if}
 
 	{#if $modalShown}
+		<svelte:component this={$modalStack[0]} />
 		<!-- Login, signup -->
 		{#if $modalPage === "login"}
 			<LoginModal />
