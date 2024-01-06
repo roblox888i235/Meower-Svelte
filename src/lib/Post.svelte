@@ -47,6 +47,9 @@
 
 	let adminDeleteButton, adminRestoreButton;
 
+
+	const tinyTheme = true;
+
 	// TODO: make bridged tag a setting
 
 	/**
@@ -289,6 +292,7 @@
 </script>
 
 <Container>
+	<div class={tinyTheme ? "small" : ''}>
 	<div class="post-header">
 		{#if buttons}
 			<div class="settings-controls">
@@ -400,6 +404,7 @@
 				{/if}
 			</div>
 		{/if}
+		{#if !tinyTheme}
 		<button
 			class="pfp"
 			on:click={async () => {
@@ -431,11 +436,13 @@
 			{:catch}
 				<PFP
 					icon={-2}
+					tinyTheme={tinyTheme}
 					alt="{post.user}'s profile picture"
 					online={$ulist.includes(post.user)}
 				/>
 			{/await}
 		</button>
+		{/if}
 		<div class="creatordate">
 			<div class="creator">
 				<h2>
@@ -560,21 +567,29 @@
 		</div>
 	{:else}
 		<p class="post-content" style="border-left-color: #4b5563;">
-			{#await addFancyElements(post.content) then content}
-				{@html content}
-			{/await}
+			{#if (!tinyTheme)}
+				{#await addFancyElements(post.content) then content}
+					{@html content}
+				{/await}
+			{:else}
+				{post.content}
+			{/if}
 		</p>
 	{/if}
 	{#if editError}
 		<p style="color: crimson;">{editError}</p>
 	{/if}
 	{#if !editing}
+		{#if !tinyTheme}
 		<div class="post-images">
 			{#each images as { title, url }}
 				<Attachment {title} {url} />
 			{/each}
 		</div>
+		{/if}
 	{/if}
+	</div>
+
 </Container>
 
 <style>
@@ -585,6 +600,48 @@
 		background: none !important;
 		color: inherit;
 	}
+
+	.small {
+		display: inline-flex !important;
+		max-height: 11% !important;
+		padding: 1px !important;
+		margin: 0px !important;
+		white-space: nowrap !important;
+		align-items: center !important;
+	}
+
+
+	.small .post-header {
+		gap: 0.1em !important;
+		display: inline-flex !important;
+		flex-wrap: nowrap !important;
+		align-items: center !important;
+	}
+	.small .post-header .creatordate  {
+		gap: 0.5em !important;
+		display: inline-flex !important;
+		flex-wrap: nowrap !important;
+		align-items: right !important;
+	}
+
+	.small .post-header .creatordate .creator h2 {
+		font-size: 100%;
+	}
+
+	.small .post-content {
+		margin-left: 5px !important;
+		position: relative !important;
+		text-align: top !important;
+	}
+
+	.small .post-header .settings-controls {
+		position: absolute !important;
+		top: 25%;
+		right: 0.25em;
+	}
+
+
+
 	.post-header {
 		display: flex;
 		align-items: center;
@@ -600,6 +657,7 @@
 		flex-wrap: wrap;
 		align-items: center;
 		gap: 0.5em;
+
 	}
 	.creator h2 {
 		font-size: 200%;

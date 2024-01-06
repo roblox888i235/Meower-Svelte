@@ -3,10 +3,12 @@
 	export let icon = -1;
 	export let alt = "Profile picture";
 	export let online = false;
-	export let size = 1;
 	export let raw = false;
+	export let tinyTheme = false;
 
 	import errorIcon from "../assets/avatars/icon_err.svg";
+
+
 
 	/**
 	 * @type {*}
@@ -24,7 +26,7 @@
 	$: setId(icon);
 </script>
 
-<span class:pfp-container={!raw} style:--size={size}>
+<span class:pfp-container={!raw} class:tiny={tinyTheme}>
 	{#if online && !raw}
 		<span class="online" />
 	{/if}
@@ -79,6 +81,9 @@
 		/* Always make fallback text visible */
 		color: black;
 	}
+
+
+
 
 	.loading {
 		animation: spin 0.5s linear infinite;
