@@ -15,7 +15,7 @@
 	Slots:
 	- error and empty: These slots unction the same as PagedList (see its comment).
 		There are no "loaded" or "item" slots.
-	
+
 	Events:
 	- loaded: Fired when the list loads for the first time.
 -->
@@ -279,9 +279,11 @@
 		}
 		if (!fetchUrl) dispatch("loaded");
 	});
+
+	const tinyTheme = true;
 </script>
 
-<div>
+<div id="pl">
 	<!-- I think we discussed that guest posting will not be in
 		the official client, due to moderation reasons -->
 	{#if canPost && $user.name}
@@ -587,7 +589,7 @@
 							{/if}
 						{/if}
 					{:else if !$user.hide_blocked_users || $relationships[post.user] !== 2}
-						<Post {post} {adminView} input={postInput} />
+						<Post {post} {adminView} input={postInput} tinyTheme={tinyTheme}/>
 					{/if}
 				</div>
 			{/each}
@@ -625,6 +627,10 @@
 		flex-grow: 1;
 		resize: none;
 		max-height: 300px;
+	}
+
+	#pl {
+		overflow-x: hidden; max-width: 100% !important;
 	}
 
 	.post-errors {

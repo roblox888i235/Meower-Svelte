@@ -33,6 +33,7 @@
 	export let buttons = true;
 	export let input = null;
 	export let adminView = false;
+	export let tinyTheme = false;
 
 	let bridged = false;
 	let webhook = false;
@@ -48,7 +49,6 @@
 	let adminDeleteButton, adminRestoreButton;
 
 
-	const tinyTheme = true;
 
 	// TODO: make bridged tag a setting
 
@@ -282,6 +282,10 @@
 	}
 
 	onMount(initPostUser);
+	if (tinyTheme) {
+		const body = document.getElementsByTagName("body")[0]
+		body.style.overflowX = "hidden"
+	}
 
 	$: noPFP =
 		post.user === "Notification" ||
@@ -694,81 +698,10 @@
 				{/if}
 			</div>
 		{/if}
-		{#if !tinyTheme}
-		<button
-			class="pfp"
-			on:click={async () => {
-				if (noPFP) return;
-				$goto(`/users/${post.user}`);
-			}}
-		>
-			{#await noPFP ? Promise.resolve(true) : loadProfile(post.user)}
-				<PFP
-					icon={-2}
-					alt="{post.user}'s profile picture"
-					online={$ulist.includes(post.user)}
-				/>
-			{:then profile}
-				<PFP
-					icon={noPFP
-						? post.user === "Server"
-							? 102
-							: post.post_origin === "inbox" &&
-							  (post.user === "Announcement" ||
-									post.user === "Notification" ||
-									post.user.startsWith("Notification to"))
-							? 101
-							: -2
-						: profile.pfp_data}
-					alt="{post.user}'s profile picture"
-					online={$ulist.includes(post.user)}
-				/>
-			{:catch}
-				<PFP
-					icon={-2}
-					tinyTheme={tinyTheme}
-					alt="{post.user}'s profile picture"
-					online={$ulist.includes(post.user)}
-				/>
-			{/await}
-		</button>
-		{/if}
+
 		<div class="creatordate">
-			<div class="creator">
-				<h2>
-					<LiText text={post.user} />
-				</h2>
 
-				{#if bridged}
-					<Badge
-						text="BRIDGED"
-						title="This post is bridged from an external service by a bot"
-					/>
-				{/if}
-
-				{#if webhook}
-					<Badge
-						text="WEBHOOK"
-						title="This post was posted by the @Webhooks bot. The username may not mean the user actually posted it!"
-					/>
-				{/if}
-
-				<!-- disabled until proper bot badges are added
-				{#if post.isvbot && !webhook}
-					<Badge
-						text="BOT"
-						title="This bot has been verified"
-						checkmark={true}
-					/>
-				{/if}
-
-				{#if post.isuvbot && !webhook}
-					<Badge text="BOT" title="This bot has not been verified" />
-				{/if}
-				-->
-			</div>
-
-			<FormattedDate date={post.date} />
+			[<FormattedDate date={post.date} />]
 			{#if post.edited_at}
 				<i
 					>(<FormattedDate
@@ -792,9 +725,45 @@
 					/>)</i
 				>
 			{/if}
+			<div class="creator">
+				<h2>
+					<LiText text={post.user} />
+				</h2>
+
+				{#if bridged}
+					<Badge
+						text="BRIDGED"
+						title="This post is bridged from an external service by a bot"
+						small={true}
+					/>
+				{/if}
+
+				{#if webhook}
+					<Badge
+						text="WEBHOOK"
+						title="This post was posted by the @Webhooks bot. The username may not mean the user actually posted it!"
+						small={true}
+					/>
+				{/if}
+
+				<!-- disabled until proper bot badges are added
+				{#if post.isvbot && !webhook}
+					<Badge
+						text="BOT"
+						title="This bot has been verified"
+						checkmark={true}
+					/>
+				{/if}
+
+				{#if post.isuvbot && !webhook}
+					<Badge text="BOT" title="This bot has not been verified" />
+				{/if}
+				-->
+			</div>
+
 		</div>
 	</div>
-	{#if editing}
+		{#if editing}
 		<textarea
 			type="text"
 			class="white"
@@ -855,14 +824,14 @@
 				}}>Save</button
 			>
 		</div>
-	{:else}
-		<p class="post-content" style="border-left-color: #4b5563;">
-			{post.content}
-		</p>
-	{/if}
-	{#if editError}
-		<p style="color: crimson;">{editError}</p>
-	{/if}
+		{:else}
+			<p class="post-content" style="border-left-color: #4b5563;">
+				{post.content}
+			</p>
+		{/if}
+		{#if editError}
+			<p style="color: crimson;">{editError}</p>
+		{/if}
 	</div>
 
 
@@ -885,6 +854,8 @@
 		margin-bottom: -10px !important;
 		white-space: nowrap !important;
 		align-items: center !important;
+		flex-wrap: nowrap !important;
+		float: none !important;
 	}
 
 
@@ -893,7 +864,13 @@
 		display: inline-flex !important;
 		flex-wrap: nowrap !important;
 		align-items: center !important;
+
 	}
+
+	.small .post-header * {
+		flex-wrap: nowrap;
+	}
+
 	.small .post-header .creatordate  {
 		gap: 0.5em !important;
 		display: inline-flex !important;
@@ -909,6 +886,7 @@
 		margin-left: 5px !important;
 		position: relative !important;
 		text-align: top !important;
+		overflow: hidden;
 	}
 
 	.small .post-header .settings-controls {
@@ -982,5 +960,10 @@
 		padding: 10px;
 		border-radius: 10px;
 		width: 50%;
+	}
+
+	:global(html), :global(body) {
+		max-width: 100%;
+    	overflow-x: hidden;
 	}
 </style>

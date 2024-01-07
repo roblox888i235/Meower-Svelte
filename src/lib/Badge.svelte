@@ -5,6 +5,7 @@
 	export let title = null;
 	export let checkmark = false;
 	export let small = false;
+	
 </script>
 
 <span
