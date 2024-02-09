@@ -6,7 +6,6 @@ export const IMAGE_HOST_WHITELIST = [
 	"https://meower.org/",
 	"https://http.meower.org/",
 	"https://assets.meower.org/",
-	"https://forums.meower.org/",
 	"https://go.meower.org/", // not everyone can add urls to go.meower.org, should be fine
 	"https://hedgedoc.meower.org/",
 	"https://docs.meower.org/",
